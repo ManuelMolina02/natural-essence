@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Modal } from "antd";
 
 export const HeaderContainer = styled.header`
   background-color: ${({ theme }) => theme["gray-900"]};
@@ -32,20 +31,5 @@ export const NewTransactionButton = styled.button`
 
   &:hover {
     filter: brightness(0.9);
-  }
-`;
-
-export const AddTransactionModal = styled(Modal)`
-  .ant-modal-content {
-    background-color: ${({ theme }) => theme["gray-800"]};
-    color: ${({ theme }) => theme["gray-100"]};
-
-    .ant-modal-close {
-      color: ${({ theme }) => theme["gray-400"]};
-
-      &:hover {
-        background-color: ${({ theme }) => theme["gray-700"]};
-      }
-    }
   }
 `;

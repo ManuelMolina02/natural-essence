@@ -1,8 +1,12 @@
 import { FaRegArrowAltCircleDown, FaRegArrowAltCircleUp } from "react-icons/fa";
 import { SummaryCard, SummaryContainer } from "./styles";
 import { BsCurrencyDollar } from "react-icons/bs";
+import { formatterPrice } from "../../utils/formatter";
+import { useSummary } from "../../hooks/useSummary";
 
 export function Summary() {
+  const summary = useSummary();
+
   return (
     <SummaryContainer>
       <SummaryCard>
@@ -10,7 +14,7 @@ export function Summary() {
           <span>Entradas</span>
           <FaRegArrowAltCircleUp size={32} color="#00b37e" />
         </header>
-        <strong>R$ 2.000,00</strong>
+        <strong>{formatterPrice(summary.income)}</strong>
       </SummaryCard>
 
       <SummaryCard>
@@ -18,15 +22,15 @@ export function Summary() {
           <span>Saídas</span>
           <FaRegArrowAltCircleDown size={32} color="#f75a68" />
         </header>
-        <strong>R$ 1.250,00</strong>
+        <strong>{formatterPrice(summary.outcome)}</strong>
       </SummaryCard>
 
       <SummaryCard variant="green">
         <header>
-          <span>Total</span>
+          <span>Saldo</span>
           <BsCurrencyDollar size={32} color="#fff" />
         </header>
-        <strong>R$ 750,00</strong>
+        <strong>{formatterPrice(summary.total)}</strong>
       </SummaryCard>
     </SummaryContainer>
   );

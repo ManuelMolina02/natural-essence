@@ -1,16 +1,123 @@
+import { Button as ButtonAntd, Modal, Radio, Steps } from "antd";
 import styled from "styled-components";
+
+export const StepsContainer = styled(Steps)`
+  .ant-steps-item-title {
+    color: ${({ theme }) => theme["gray-100"]} !important;
+  }
+
+  .ant-steps-item-icon {
+    width: 34px;
+    height: 34px;
+
+    background-color: ${({ theme }) => theme["gray-600"]} !important;
+    .ant-steps-icon {
+      color: ${({ theme }) => theme["gray-300"]} !important;
+    }
+  }
+
+  .ant-steps-item-title::after {
+    background-color: ${({ theme }) => theme["gray-600"]} !important;
+  }
+
+  .ant-steps-item-finish {
+    .ant-steps-item-icon {
+      border-color: ${({ theme }) => theme["teal-700"]} !important;
+      border-width: 2px !important;
+    }
+    .ant-steps-item-title::after {
+      background-color: ${({ theme }) => theme["teal-700"]} !important;
+    }
+    .ant-steps-icon {
+      color: ${({ theme }) => theme["green-300"]} !important;
+    }
+  }
+
+  .ant-steps-item-active .ant-steps-item-icon {
+    background-color: ${({ theme }) => theme["gray-600"]} !important;
+    border-color: ${({ theme }) => theme["teal-700"]} !important;
+    border-width: 2px !important;
+
+    .ant-steps-icon {
+      color: ${({ theme }) => theme["gray-100"]} !important;
+    }
+  }
+`;
+
+export const Button = styled(ButtonAntd)`
+  width: 100%;
+  height: 48px;
+
+  background-color: ${({ theme }) => theme["gray-600"]};
+  border: none;
+  box-shadow: none;
+  transition: background-color 0.2s, filter 0.2s;
+
+  &:hover {
+    background-color: #3e3e45 !important;
+    filter: brightness(1.2) !important;
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme["gray-700"]} !important;
+    color: ${({ theme }) => theme["gray-400"]} !important;
+    filter: none !important;
+  }
+`;
+
+export const ReturnButton = styled(ButtonAntd)`
+  width: 100%;
+  height: 48px;
+
+  background-color: ${({ theme }) => theme["gray-800"]};
+  color: ${({ theme }) => theme["gray-500"]};
+  border: 1px solid ${({ theme }) => theme["gray-600"]};
+  box-shadow: none;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme["gray-700"]} !important;
+    border: none !important;
+    color: ${({ theme }) => theme["gray-100"]} !important;
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme["gray-700"]} !important;
+    color: ${({ theme }) => theme["gray-400"]} !important;
+    filter: none !important;
+    border: none !important;
+  }
+`;
 
 export const TransactionsContainer = styled.main`
   width: 100%;
   max-width: 1120px;
   margin: 4rem auto 0;
-  padding: 0 1.5rem;
+  padding: 2px 1.5rem 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  div:first-child {
+    h2 {
+      color: ${({ theme }) => theme["gray-300"]};
+    }
+  }
+`;
+
+export const TableBox = styled.div`
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 6px;
+  padding: 12px;
+  background-color: ${(props) => props.theme["gray-900"]};
 `;
 
 export const TransactionsTable = styled.table`
   width: 100%;
+
   border-collapse: separate;
-  border-spacing: 0 0.5rem;
+  border-spacing: 0 1rem;
 
   tbody > tr > td:first-child {
     width: 40%;
@@ -32,9 +139,180 @@ export const TransactionsTable = styled.table`
   }
 `;
 
-export const PriceHighlight = styled.span<{ type: "income" | "outcome" }>`
+export const PriceHighlight = styled.span<{
+  type: "income" | "outcome" | undefined;
+}>`
   color: ${(props) =>
     props.type === "income"
       ? props.theme["green-300"]
       : props.theme["red-300"]};
+`;
+
+export const FloatButton = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: ${(props) => props.theme["gray-600"]};
+
+  cursor: pointer;
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(1.2);
+  }
+`;
+
+export const TransactionModal = styled(Modal)`
+  .ant-modal-content {
+    background-color: ${({ theme }) => theme["gray-800"]};
+    color: ${({ theme }) => theme["gray-100"]};
+
+    .ant-modal-close {
+      color: ${({ theme }) => theme["gray-400"]};
+
+      &:hover {
+        background-color: ${({ theme }) => theme["gray-700"]};
+      }
+    }
+  }
+`;
+
+export const MonthButton = styled.div<{
+  active?: boolean;
+}>`
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: ${({ theme, active }) => {
+    return active ? theme["gray-300"] : theme["gray-700"];
+  }};
+  color: ${({ theme, active }) =>
+    active ? theme["gray-900"] : theme["gray-300"]};
+  font-weight: ${({ active }) => (active ? "bold" : "normal")};
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, font-weight 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme["gray-600"]};
+  }
+`;
+
+export const RadioGroup = styled(Radio.Group)<{
+  itemsMode?: "grid" | "list";
+}>`
+  width: 100%;
+
+  ${({ itemsMode }) => {
+    if (itemsMode === "grid") {
+      return `
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+      `;
+    } else {
+      return `
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;`;
+    }
+  }}
+
+  .ant-radio-button-wrapper {
+    border: none;
+    border-radius: 6px;
+
+    min-width: 100%;
+    min-height: 62px;
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${({ theme }) => theme["gray-800"]};
+    color: ${({ theme }) => theme["gray-300"]};
+  }
+
+  .ant-radio-button-checked {
+    background-color: ${({ theme }) => theme["teal-700"]};
+    color: ${({ theme }) => theme["gray-100"]};
+    border-radius: 6px;
+  }
+
+  .ant-radio-button-wrapper::before {
+    display: none !important;
+  }
+`;
+
+export const Image = styled.img`
+  width: 360px;
+  height: 42s0px;
+
+  object-fit: cover;
+  border-radius: 8px;
+  filter: grayscale(1) brightness(0.8) blur(1px);
+
+  margin: 0 auto;
+
+  transition: filter 0.3s;
+`;
+
+export const BoxImage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    ${Image} {
+      filter: none;
+    }
+
+    > div {
+      transform: translateY(-40px);
+      transition: transform 0.3s;
+      background-color: rgba(0, 0, 0, 0.9);
+
+      span {
+        display: block;
+      }
+    }
+  }
+  border-radius: 8px;
+  overflow: hidden;
+
+  > div {
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    bottom: -160px;
+    background-color: rgba(0, 0, 0, 0.8);
+
+    height: 300px;
+    padding: 0 8px;
+    padding-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    visibility: visible;
+    transform: translateY(0);
+    transition: transform 0.3s;
+
+    h2 {
+      color: ${({ theme }) => theme["gray-100"]};
+      margin-bottom: 14px;
+    }
+
+    span {
+      color: ${({ theme }) => theme["gray-300"]};
+      display: none;
+      padding: 0 16px;
+    }
+  }
 `;
