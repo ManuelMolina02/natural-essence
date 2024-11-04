@@ -46,14 +46,6 @@ export function FormGuide() {
 
   const [data, setData] = useState(seasoning);
 
-  const [sendData, setSendData] = useState<{
-    number: string;
-    typeMessage: "txt" | "img";
-  }>({
-    number: "",
-    typeMessage: "txt",
-  });
-
   function formatFilter(value: string) {
     const regex = /[^a-zA-Z0-9]/g;
     return value ? value.normalize("NFD").replace(regex, "").toLowerCase() : "";
@@ -104,35 +96,6 @@ export function FormGuide() {
     }, 500);
   }
 
-  function onFinishForm() {
-    console.log("Finish Form");
-
-    // Send data to Whatsapp
-    const { number, typeMessage } = sendData;
-    const message = data.map(
-      (item: SeasoningProps) => `${item.name} - ${item.benefits}`
-    );
-
-    console.log({ number, typeMessage });
-
-    // Send message
-    if (typeMessage === "txt") {
-      console.log(message.join("\n"));
-    } else {
-      console.log(message);
-    }
-
-    // Reset Form
-    setCurrentStep(1);
-    setFormData({ category: "", illness: "", list: [] });
-
-    // Reset Send Data
-    setSendData({ number: "", typeMessage: "txt" });
-
-    //send message
-  }
-
-  //formatar e enviar pedido
   function sendMessage() {
     if (!window) {
       return;
