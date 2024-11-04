@@ -108,7 +108,7 @@ export function FormGuide() {
 
       const text = `Olá segue sua lista de ${
         formData.category === "revenues" ? "Verduras" : "Frutas"
-      }\n\n ${benefitsList.join("\n")}`;
+      } para ${formData.illness}:\n\n ${benefitsList.join("\n")}`;
       window.open(
         `https://api.whatsapp.com/send?phone=${numberWhats}&text=${window.encodeURIComponent(
           text
