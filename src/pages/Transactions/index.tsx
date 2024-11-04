@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { message, Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
 import {
-  StepsContainer,
   Button,
-  RadioGroup,
   ReturnButton,
   Image,
   BoxImage,
+  Table,
+  Link,
+  BoxLink,
 } from "./styles";
 import { Flex, Heading, Text } from "@pandora-box-tecadi/desing-ui-react";
+import { OptionsList } from "./components/RadioGroup";
+import { seasoning, SeasoningProps } from "../../data/data";
+import { IoLogoWhatsapp } from "react-icons/io";
+import { Loader } from "./components/Loading";
 
 const options = [
   {
@@ -18,11 +21,11 @@ const options = [
     value: "revenues",
     options: [
       "Recuperação Muscular",
-      "Detóx",
       "Digestão",
       "Colesterol",
       "Diabetes",
       "Pressão Alta",
+      "Imunidade",
     ],
   },
   {
@@ -33,291 +36,255 @@ const options = [
   {
     label: "Temperos e Ervas",
     value: "treatments",
-    options: ["Recuperação Muscular", "Detóx", "Digestão", "Imunidade"],
+    options: ["Recuperação Muscular", "Digestão", "Imunidade"],
   },
 ];
 
 export function FormGuide() {
-  const [showForm, setShowForm] = useState(false);
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [current, setCurrent] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(seasoning);
 
-  const [stepContent, setStepContent] = useState<{
-    title: string;
-    description: string;
+  const [sendData, setSendData] = useState<{
+    number: string;
+    typeMessage: "txt" | "img";
   }>({
-    title: "Selecionar Categoria",
-    description:
-      "O primeiro será definir o que você deseja descobrir, novas receitas, sucos ou temperos utilizados para sua melhora.",
+    number: "",
+    typeMessage: "txt",
   });
 
-  const [formValues, setFormValues] = useState<{
-    path: string;
-    pathItem: string;
-  }>({
-    path: "revenues",
-    pathItem: "Colesterol",
-  });
-
-  const [pathList, setPathList] = useState<string[]>(options[0].options);
-
-  const steps = [
-    {
-      title: "Categoria",
-      content: (
-        <Flex
-          style={{
-            padding: "1rem",
-            minHeight: "360px",
-          }}
-          direction="column"
-        >
-          <RadioGroup
-            name="path"
-            value={formValues.path}
-            defaultValue={formValues.path}
-            options={options}
-            onChange={(e) => {
-              setFormValues({
-                ...formValues,
-                path: e.target.value,
-                pathItem: options.find((item) => item.value === e.target.value)
-                  ?.options[0] as string,
-              });
-
-              const selectedOption = options.find(
-                (item) => item.value === e.target.value
-              );
-
-              if (selectedOption) {
-                setPathList(selectedOption.options);
-              }
-            }}
-            optionType="button"
-            buttonStyle="solid"
-          />
-        </Flex>
-      ),
-    },
-    {
-      title: "Item",
-      content: (
-        <Flex
-          style={{
-            padding: "1rem",
-            minHeight: "360px",
-          }}
-        >
-          <RadioGroup
-            name="pathItem"
-            value={formValues.pathItem}
-            defaultValue={formValues.pathItem}
-            itemsMode="grid"
-            options={pathList.map((item) => ({
-              label: item,
-              value: item,
-            }))}
-            onChange={(e) => {
-              setFormValues({
-                ...formValues,
-                pathItem: e.target.value,
-              });
-            }}
-            optionType="button"
-            buttonStyle="solid"
-          />
-        </Flex>
-      ),
-    },
-    {
-      title: "Resultado",
-      content: (
-        <Flex
-          style={{
-            padding: "1rem",
-            minHeight: "360px",
-          }}
-        >
-          <p>Formulário finalizado</p>
-        </Flex>
-      ),
-    },
-  ];
+  function formatFilter(value: string) {
+    const regex = /[^a-zA-Z0-9]/g;
+    return value ? value.normalize("NFD").replace(regex, "").toLowerCase() : "";
+  }
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(true);
-    }, 1500);
-  }, []);
+    if (currentStep === 3) {
+      const illness = formatFilter(formData.illness);
 
-  const next = () => {
-    setCurrent(current + 1);
-
-    if (current === 0) {
-      setStepContent({
-        title: "Selecionar Item",
-        description:
-          "Agora escolha o item que deseja descobrir mais informações.",
+      const list = seasoning.filter((item: any) => {
+        const benefits = formatFilter(item.benefits);
+        return benefits.includes
+          ? benefits.includes(illness)
+          : benefits === illness;
       });
-    } else if (current === 1) {
-      setStepContent({
-        title: "Finalizar",
-        description: "Agora finalize o processo.",
-      });
-    } else {
-      setStepContent({
-        title: "Selecionar Categoria",
-        description:
-          "O primeiro será definir o que você deseja descobrir, novas receitas, sucos ou temperos utilizados para sua melhora.",
-      });
+      setData(list);
     }
-  };
+  }, [currentStep]);
 
-  const prev = () => {
-    if (current === 1) {
-      setStepContent({
-        title: "Selecionar Categoria",
-        description:
-          "O primeiro será definir o que você deseja descobrir, novas receitas, sucos ou temperos utilizados para sua melhora.",
-      });
-    } else if (current === 2) {
-      setStepContent({
-        title: "Selecionar Item",
-        description:
-          "Agora escolha o item que deseja descobrir mais informações.",
-      });
-    } else {
-      setStepContent({
-        title: "Finalizar",
-        description: "Agora finalize o processo.",
-      });
-    }
+  const [formData, setFormData] = useState<{
+    category: "revenues" | "spices" | "";
+    illness: string;
+    list: string[];
+  }>({
+    category: "",
+    illness: "",
+    list: [],
+  });
 
-    if (current === 0) {
-      setShowForm(false);
+  function prevStep() {
+    if (currentStep === 1) return;
 
-      setStepContent({
-        title: "Selecionar Categoria",
-        description:
-          "O primeiro será definir o que você deseja descobrir, novas receitas, sucos ou temperos utilizados para sua melhora.",
-      });
-    } else {
-      setCurrent(current - 1);
-    }
-  };
-
-  const items = steps.map((item) => ({ key: item.title, title: item.title }));
-
-  const contentStyle: React.CSSProperties = {
-    lineHeight: "260px",
-    textAlign: "center",
-    color: "#e4e4e7",
-    backgroundColor: "#27272a",
-    borderRadius: "8px",
-    marginTop: 16,
-  };
-
-  function handleFinish() {
-    setLoading(false);
-    message.success("Processing complete!");
-    setCurrent(0);
+    setLoading(true);
+    setCurrentStep((prev) => prev - 1);
 
     setTimeout(() => {
-      setLoading(true);
-    }, 1500);
+      setLoading(false);
+    }, 250);
   }
+
+  function nextStep() {
+    if (currentStep === 3) return;
+    setLoading(true);
+    setCurrentStep((prev) => prev + 1);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }
+
+  function onFinishForm() {
+    console.log("Finish Form");
+
+    // Send data to Whatsapp
+    const { number, typeMessage } = sendData;
+    const message = data.map(
+      (item: SeasoningProps) => `${item.name} - ${item.benefits}`
+    );
+
+    console.log({ number, typeMessage });
+
+    // Send message
+    if (typeMessage === "txt") {
+      console.log(message.join("\n"));
+    } else {
+      console.log(message);
+    }
+
+    // Reset Form
+    setCurrentStep(1);
+    setFormData({ category: "", illness: "", list: [] });
+
+    // Reset Send Data
+    setSendData({ number: "", typeMessage: "txt" });
+
+    //send message
+  }
+
+  //formatar e enviar pedido
+  function sendMessage() {
+    if (!window) {
+      return;
+    } else {
+      const numberWhats = "5548996462015";
+
+      const benefitsList = data.map(
+        (item: SeasoningProps) => `${item.name} - ${item.benefits}`
+      );
+
+      const text = `Olá segue sua lista de ${
+        formData.category === "revenues" ? "Verduras" : "Frutas"
+      }\n\n ${benefitsList.join("\n")}`;
+      window.open(
+        `https://api.whatsapp.com/send?phone=${numberWhats}&text=${window.encodeURIComponent(
+          text
+        )}`
+      );
+    }
+  }
+
   return (
     <>
-      {showForm ? (
-        <>
-          <StepsContainer current={current} items={items} />
-          <Flex
-            direction="column"
-            style={{
-              lineHeight: "1.5rem",
-              gap: "2rem",
-              padding: "3.2rem 2rem",
-            }}
-            align="center"
-          >
-            <Heading size="2xl">{stepContent.title}</Heading>
-            <Text>{stepContent.description}</Text>
-          </Flex>
-          <div style={contentStyle}>
-            {loading ? (
-              <>{steps[current].content}</>
-            ) : (
-              <Spin
-                indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-              />
-            )}
-          </div>
-          <Flex style={{ marginTop: "4rem" }} align="center" justify="center">
-            <ReturnButton style={{ margin: "0 8px" }} onClick={() => prev()}>
-              Voltar
-            </ReturnButton>
+      {currentStep === 3 && (
+        <BoxLink>
+          <Link target="_blank" onClick={sendMessage}>
+            <IoLogoWhatsapp size={22} />
+            Enviar por Whatsapp
+          </Link>
+          {/*
+          <Link  target="_blank">
+            <FaArrowAltCircleDown size={22} />
+            Download
+          </Link>
+          */}
+        </BoxLink>
+      )}
+      <Flex
+        direction="column"
+        style={{
+          padding: "1rem",
+          minHeight: "360px",
+        }}
+        align="center"
+        justify="center"
+        gap="32px"
+      >
+        <Flex direction="column" align="center" justify="center" gap="12px">
+          <Heading size="2xl">Formulário de Guia</Heading>
+          <Text>Clique no botão abaixo para iniciar o formulário de guia.</Text>
+        </Flex>
 
-            {current < steps.length - 1 && (
-              <Button type="primary" size="large" onClick={() => next()}>
-                Avançar
-              </Button>
-            )}
-            {current === steps.length - 1 && (
-              <Button
-                type="primary"
-                size="large"
-                onClick={() => handleFinish()}
-              >
-                Finalizar
-              </Button>
-            )}
-          </Flex>
-        </>
-      ) : (
-        <Flex
-          direction="column"
-          style={{
-            padding: "1rem",
-            minHeight: "360px",
-          }}
-          align="center"
-          justify="center"
-          gap="32px"
-        >
-          <Flex direction="column" align="center" justify="center" gap="12px">
-            <Heading size="2xl">Formulário de Guia</Heading>
-            <Text>
-              Clique no botão abaixo para iniciar o formulário de guia.
-            </Text>
-          </Flex>
-
+        {currentStep === 1 && !loading && (
           <Flex gap="26px" align="center" justify="center">
-            <BoxImage onClick={() => setShowForm(true)}>
+            <BoxImage
+              onClick={() => setFormData({ ...formData, category: "revenues" })}
+              activeItem={formData.category === "revenues"}
+            >
               <Image src="/src/assets/man.webp" />
 
               <Flex direction="column">
-                <Heading size="xl">
-                  Frutas, Verduras, Legumes e Temperos
-                </Heading>
+                <Heading size="5xl">Verduras</Heading>
                 <Text>
                   Entenda os benefícios de frutas, verduras, legumes e temperos.
                 </Text>
               </Flex>
             </BoxImage>
-            <BoxImage onClick={() => setShowForm(true)}>
-              <Image src="/src/assets/woman.webp" />
+            <BoxImage
+              activeItem={formData.category === "spices"}
+              onClick={() => setFormData({ ...formData, category: "spices" })}
+            >
+              <Image src="/src/assets/fruits.webp" />
 
               <Flex direction="column">
-                <Heading size="xl">Alimentação, Sucos e Chás</Heading>
+                <Heading size="5xl">Frutas</Heading>
                 <Text>
                   Descubra os benefícios de uma boa alimentação, sucos e chás.
                 </Text>
               </Flex>
             </BoxImage>
           </Flex>
-        </Flex>
-      )}
+        )}
+
+        {currentStep === 2 && !loading && (
+          <>
+            <Flex gap="26px" align="center" justify="center">
+              <OptionsList
+                valueActive={formData.illness}
+                setValue={(value) =>
+                  setFormData({ ...formData, illness: value })
+                }
+                list={
+                  options.find((item) => item.value === formData.category)
+                    ?.options || []
+                }
+              />
+            </Flex>
+          </>
+        )}
+
+        {currentStep === 3 && !loading && (
+          <Flex gap="26px" direction="column">
+            <Table>
+              <tr>
+                <th>Nome</th>
+                <th>Benefícios</th>
+              </tr>
+              {data
+                .sort((a: SeasoningProps, b: SeasoningProps) =>
+                  a.name.localeCompare(b.name)
+                )
+                .map((item: SeasoningProps) => (
+                  <tr>
+                    <td>{item.name}</td>
+                    <td>{item.benefits}</td>
+                  </tr>
+                ))}
+            </Table>
+          </Flex>
+        )}
+
+        {loading && <Loader />}
+      </Flex>
+
+      <Flex style={{ marginTop: "4rem" }} align="center" justify="center">
+        <ReturnButton
+          style={{ margin: "0 8px" }}
+          disabled={currentStep === 1}
+          onClick={prevStep}
+        >
+          Voltar
+        </ReturnButton>
+
+        {currentStep < 3 && (
+          <Button
+            type="primary"
+            size="large"
+            onClick={nextStep}
+            disabled={
+              (currentStep === 1 && !formData.category) ||
+              (currentStep === 2 && !formData.illness)
+            }
+          >
+            Avançar
+          </Button>
+        )}
+        {currentStep === 3 && (
+          <Button type="primary" size="large">
+            Finalizar
+          </Button>
+        )}
+      </Flex>
     </>
   );
 }

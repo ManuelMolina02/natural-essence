@@ -1,4 +1,4 @@
-import { Button as ButtonAntd, Modal, Radio, Steps } from "antd";
+import { Button as ButtonAntd, Modal, Steps } from "antd";
 import styled from "styled-components";
 
 export const StepsContainer = styled(Steps)`
@@ -201,52 +201,6 @@ export const MonthButton = styled.div<{
   }
 `;
 
-export const RadioGroup = styled(Radio.Group)<{
-  itemsMode?: "grid" | "list";
-}>`
-  width: 100%;
-
-  ${({ itemsMode }) => {
-    if (itemsMode === "grid") {
-      return `
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
-      `;
-    } else {
-      return `
-      display: flex;
-      gap: 1rem;
-      flex-direction: column;`;
-    }
-  }}
-
-  .ant-radio-button-wrapper {
-    border: none;
-    border-radius: 6px;
-
-    min-width: 100%;
-    min-height: 62px;
-    text-align: center;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: ${({ theme }) => theme["gray-800"]};
-    color: ${({ theme }) => theme["gray-300"]};
-  }
-
-  .ant-radio-button-checked {
-    background-color: ${({ theme }) => theme["teal-700"]};
-    color: ${({ theme }) => theme["gray-100"]};
-    border-radius: 6px;
-  }
-
-  .ant-radio-button-wrapper::before {
-    display: none !important;
-  }
-`;
-
 export const Image = styled.img`
   width: 360px;
   height: 42s0px;
@@ -260,7 +214,9 @@ export const Image = styled.img`
   transition: filter 0.3s;
 `;
 
-export const BoxImage = styled.div`
+export const BoxImage = styled.div<{
+  activeItem?: boolean;
+}>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -279,10 +235,20 @@ export const BoxImage = styled.div`
       background-color: rgba(0, 0, 0, 0.9);
 
       span {
-        display: block;
+        bottom: 0;
+        transition: bottom 0.3s;
       }
     }
   }
+
+  ${({ activeItem }) =>
+    activeItem &&
+    `
+    ${Image} {
+      filter: none;
+    }
+  `}
+
   border-radius: 8px;
   overflow: hidden;
 
@@ -311,8 +277,83 @@ export const BoxImage = styled.div`
 
     span {
       color: ${({ theme }) => theme["gray-300"]};
-      display: none;
       padding: 0 16px;
+      position: relative;
+      bottom: -300px;
     }
   }
+`;
+
+export const Table = styled.table`
+  width: 100%;
+
+  border-collapse: separate;
+  border-spacing: 0 1rem;
+
+  th {
+    padding: 1.25rem 2rem;
+    background-color: ${(props) => props.theme["gray-600"]};
+
+    text-align: left;
+
+    &:first-child {
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+  }
+
+  td {
+    padding: 1.25rem 2rem;
+    background-color: ${(props) => props.theme["gray-700"]};
+
+    &:first-child {
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+  }
+`;
+
+export const BoxLink = styled.div`
+  position: fixed;
+  top: 20px;
+  right: 40px;
+
+  display: flex;
+  gap: 16px;
+`;
+
+export const Link = styled.a`
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  gap: 8px;
+
+  height: 48px;
+
+  background-color: ${({ theme }) => theme["gray-600"]};
+  color: ${({ theme }) => theme["gray-300"]};
+
+  border-radius: 6px;
+  transition: background-color 0.2s, filter 0.2s;
+
+  &:hover {
+    background-color: #3e3e45 !important;
+    filter: brightness(1.2) !important;
+  }
+
+  box-shadow: none;
+  border: none;
 `;
