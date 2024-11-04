@@ -202,8 +202,7 @@ export const MonthButton = styled.div<{
 `;
 
 export const Image = styled.img`
-  width: 360px;
-  height: 42s0px;
+  width: 280px;
 
   object-fit: cover;
   border-radius: 8px;
@@ -212,6 +211,10 @@ export const Image = styled.img`
   margin: 0 auto;
 
   transition: filter 0.3s;
+
+  @media (max-width: 975px) {
+    width: 220px;
+  }
 `;
 
 export const BoxImage = styled.div<{
@@ -325,7 +328,7 @@ export const Table = styled.table`
 
 export const BoxLink = styled.div`
   position: fixed;
-  top: 20px;
+  padding: 16px;
   right: 40px;
 
   display: flex;
@@ -356,4 +359,15 @@ export const Link = styled.a`
 
   box-shadow: none;
   border: none;
+
+  @media (max-width: 565px) {
+    > span {
+      display: none;
+    }
+
+    > svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
 `;

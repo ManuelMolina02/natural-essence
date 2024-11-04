@@ -10,10 +10,10 @@ import {
   BoxLink,
 } from "./styles";
 import { Flex, Heading, Text } from "@pandora-box-tecadi/desing-ui-react";
-import { OptionsList } from "./components/RadioGroup";
-import { seasoning, SeasoningProps } from "../../data/data";
+import { OptionsList } from "../components/RadioGroup";
+import { seasoning, SeasoningProps } from "../data/data";
 import { IoLogoWhatsapp } from "react-icons/io";
-import { Loader } from "./components/Loading";
+import { Loader } from "../components/Loading";
 
 const options = [
   {
@@ -123,7 +123,7 @@ export function FormGuide() {
         <BoxLink>
           <Link target="_blank" onClick={sendMessage}>
             <IoLogoWhatsapp size={22} />
-            Enviar por Whatsapp
+            <Text>Enviar por Whatsapp</Text>
           </Link>
           {/*
           <Link  target="_blank">
@@ -149,7 +149,7 @@ export function FormGuide() {
         </Flex>
 
         {currentStep === 1 && !loading && (
-          <Flex gap="26px" align="center" justify="center">
+          <Flex gap="26px" align="center" justify="center" wrap="wrap">
             <BoxImage
               onClick={() => setFormData({ ...formData, category: "revenues" })}
               activeItem={formData.category === "revenues"}
@@ -218,35 +218,32 @@ export function FormGuide() {
         )}
 
         {loading && <Loader />}
-      </Flex>
 
-      <Flex style={{ marginTop: "4rem" }} align="center" justify="center">
-        <ReturnButton
-          style={{ margin: "0 8px" }}
-          disabled={currentStep === 1}
-          onClick={prevStep}
+        <Flex
+          style={{ marginTop: "2rem" }}
+          align="center"
+          justify="center"
+          gap="28px"
+          fullSize
         >
-          Voltar
-        </ReturnButton>
+          <ReturnButton disabled={currentStep === 1} onClick={prevStep}>
+            Voltar
+          </ReturnButton>
 
-        {currentStep < 3 && (
-          <Button
-            type="primary"
-            size="large"
-            onClick={nextStep}
-            disabled={
-              (currentStep === 1 && !formData.category) ||
-              (currentStep === 2 && !formData.illness)
-            }
-          >
-            Avançar
-          </Button>
-        )}
-        {currentStep === 3 && (
-          <Button type="primary" size="large">
-            Finalizar
-          </Button>
-        )}
+          {currentStep < 3 && (
+            <Button
+              type="primary"
+              size="large"
+              onClick={nextStep}
+              disabled={
+                (currentStep === 1 && !formData.category) ||
+                (currentStep === 2 && !formData.illness)
+              }
+            >
+              Avançar
+            </Button>
+          )}
+        </Flex>
       </Flex>
     </>
   );
