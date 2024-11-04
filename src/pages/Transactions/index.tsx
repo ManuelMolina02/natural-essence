@@ -154,7 +154,7 @@ export function FormGuide() {
               onClick={() => setFormData({ ...formData, category: "revenues" })}
               activeItem={formData.category === "revenues"}
             >
-              <Image src="/src/assets/man.webp" />
+              <Image src="/assets/man.webp" />
 
               <Flex direction="column">
                 <Heading size="5xl">Verduras</Heading>
@@ -167,7 +167,7 @@ export function FormGuide() {
               activeItem={formData.category === "spices"}
               onClick={() => setFormData({ ...formData, category: "spices" })}
             >
-              <Image src="/src/assets/fruits.webp" />
+              <Image src="/assets/fruits.webp" />
 
               <Flex direction="column">
                 <Heading size="5xl">Frutas</Heading>
