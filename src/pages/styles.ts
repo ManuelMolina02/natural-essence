@@ -48,7 +48,7 @@ export const Button = styled(ButtonAntd)`
   width: 100%;
   height: 48px;
 
-  background-color: ${({ theme }) => theme["gray-600"]};
+  background-color: ${({ theme }) => theme["teal-600"]};
   border: none;
   box-shadow: none;
   transition: background-color 0.2s, filter 0.2s;

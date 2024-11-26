@@ -14,6 +14,7 @@ import { OptionsList } from "../components/RadioGroup";
 import { seasoning, SeasoningProps } from "../data/data";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { Loader } from "../components/Loading";
+import { Input, Modal, Space } from "antd";
 
 const options = [
   {
@@ -50,6 +51,25 @@ export function FormGuide() {
     const regex = /[^a-zA-Z0-9]/g;
     return value ? value.normalize("NFD").replace(regex, "").toLowerCase() : "";
   }
+
+  const contentSteps = (prevention?: string) => {
+    return [
+      {
+        title: "Escolha um tipo de Alimento",
+        description:
+          "Entenda os benefícios das frutas e verduras para prevenção de doenças e auxílio no bem-estar",
+      },
+      {
+        title: "Escolha um tipo de Prevenção",
+        description:
+          "Entenda os benefícios das frutas e verduras para prevenção de doenças e auxílio no bem-estar",
+      },
+      {
+        title: "Resultado de Busca",
+        description: `Confira os alimentos que previnem ${prevention || ""}`,
+      },
+    ];
+  };
 
   useEffect(() => {
     if (currentStep === 3) {
@@ -96,12 +116,19 @@ export function FormGuide() {
     }, 500);
   }
 
-  function sendMessage() {
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [numberPhone, setNumberPhone] = useState<{
+    ddd: string;
+    number: string;
+  }>({
+    ddd: "",
+    number: "",
+  });
+
+  const sendMessageWhatsapp = () => {
     if (!window) {
       return;
     } else {
-      const numberWhats = "5548996462015";
-
       const benefitsList = data.map(
         (item: SeasoningProps) => `${item.name} - ${item.benefits}`
       );
@@ -110,18 +137,18 @@ export function FormGuide() {
         formData.category === "revenues" ? "Verduras" : "Frutas"
       } para ${formData.illness}:\n\n ${benefitsList.join("\n")}`;
       window.open(
-        `https://api.whatsapp.com/send?phone=${numberWhats}&text=${window.encodeURIComponent(
-          text
-        )}`
+        `https://api.whatsapp.com/send?phone=${
+          "55" + numberPhone.ddd + numberPhone.number
+        }&text=${window.encodeURIComponent(text)}`
       );
     }
-  }
+  };
 
   return (
     <>
       {currentStep === 3 && (
         <BoxLink>
-          <Link target="_blank" onClick={sendMessage}>
+          <Link onClick={() => setOpenModal(true)}>
             <IoLogoWhatsapp size={22} />
             <Text>Enviar por Whatsapp</Text>
           </Link>
@@ -144,8 +171,10 @@ export function FormGuide() {
         gap="32px"
       >
         <Flex direction="column" align="center" justify="center" gap="12px">
-          <Heading size="2xl">Formulário de Guia</Heading>
-          <Text>Clique no botão abaixo para iniciar o formulário de guia.</Text>
+          <Heading size="2xl">{contentSteps()[currentStep - 1].title}</Heading>
+          <Text>
+            {contentSteps(formData.illness)[currentStep - 1].description}
+          </Text>
         </Flex>
 
         {currentStep === 1 && !loading && (
@@ -159,7 +188,8 @@ export function FormGuide() {
               <Flex direction="column">
                 <Heading size="5xl">Verduras</Heading>
                 <Text>
-                  Entenda os benefícios de frutas, verduras, legumes e temperos.
+                  Entenda os benefícios das verduras para prevenção de doenças e
+                  auxílio no bem-estar
                 </Text>
               </Flex>
             </BoxImage>
@@ -172,7 +202,8 @@ export function FormGuide() {
               <Flex direction="column">
                 <Heading size="5xl">Frutas</Heading>
                 <Text>
-                  Descubra os benefícios de uma boa alimentação, sucos e chás.
+                  Entenda os benefícios das frutas para prevenção de doenças e
+                  auxílio no bem-estar
                 </Text>
               </Flex>
             </BoxImage>
@@ -244,6 +275,35 @@ export function FormGuide() {
             </Button>
           )}
         </Flex>
+
+        <Modal
+          centered
+          open={openModal}
+          onOk={sendMessageWhatsapp}
+          onCancel={() => {}}
+        >
+          <Flex gap="20px" direction="column">
+            <Heading size="xl">Insira seu whatsapp</Heading>
+            <Space.Compact>
+              <Input
+                style={{ width: "20%" }}
+                defaultValue=""
+                placeholder="DDD"
+                onChange={(e) =>
+                  setNumberPhone({ ...numberPhone, ddd: e.target.value })
+                }
+              />
+              <Input
+                style={{ width: "80%" }}
+                defaultValue=""
+                placeholder="Número do telefone"
+                onChange={(e) =>
+                  setNumberPhone({ ...numberPhone, number: e.target.value })
+                }
+              />
+            </Space.Compact>
+          </Flex>
+        </Modal>
       </Flex>
     </>
   );
