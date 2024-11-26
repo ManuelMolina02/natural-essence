@@ -8,13 +8,14 @@ import {
   Table,
   Link,
   BoxLink,
+  ModalContainer,
 } from "./styles";
 import { Flex, Heading, Text } from "@pandora-box-tecadi/desing-ui-react";
 import { OptionsList } from "../components/RadioGroup";
 import { seasoning, SeasoningProps } from "../data/data";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { Loader } from "../components/Loading";
-import { Input, Modal, Space } from "antd";
+import { Input, Space } from "antd";
 
 const options = [
   {
@@ -142,6 +143,11 @@ export function FormGuide() {
         }&text=${window.encodeURIComponent(text)}`
       );
     }
+  };
+
+  const closeModal = () => {
+    setOpenModal(false);
+    setNumberPhone({ ddd: "", number: "" });
   };
 
   return (
@@ -276,11 +282,27 @@ export function FormGuide() {
           )}
         </Flex>
 
-        <Modal
+        <ModalContainer
           centered
           open={openModal}
-          onOk={sendMessageWhatsapp}
-          onCancel={() => {}}
+          onCancel={closeModal}
+          footer={[
+            <Flex
+              gap="16px"
+              style={{
+                marginTop: "46px",
+              }}
+            >
+              <ReturnButton key="back" onClick={closeModal}>
+                Cancelar
+              </ReturnButton>
+              ,
+              <Button key="submit" type="primary" onClick={sendMessageWhatsapp}>
+                Enviar
+              </Button>
+              ,
+            </Flex>,
+          ]}
         >
           <Flex gap="20px" direction="column">
             <Heading size="xl">Insira seu whatsapp</Heading>
@@ -303,7 +325,7 @@ export function FormGuide() {
               />
             </Space.Compact>
           </Flex>
-        </Modal>
+        </ModalContainer>
       </Flex>
     </>
   );

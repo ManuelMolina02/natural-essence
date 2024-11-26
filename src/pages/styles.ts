@@ -59,7 +59,7 @@ export const Button = styled(ButtonAntd)`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme["gray-700"]} !important;
+    background-color: ${({ theme }) => theme["teal-700"]} !important;
     color: ${({ theme }) => theme["gray-400"]} !important;
     filter: none !important;
   }
@@ -164,40 +164,6 @@ export const FloatButton = styled.div`
 
   &:hover {
     filter: brightness(1.2);
-  }
-`;
-
-export const TransactionModal = styled(Modal)`
-  .ant-modal-content {
-    background-color: ${({ theme }) => theme["gray-800"]};
-    color: ${({ theme }) => theme["gray-100"]};
-
-    .ant-modal-close {
-      color: ${({ theme }) => theme["gray-400"]};
-
-      &:hover {
-        background-color: ${({ theme }) => theme["gray-700"]};
-      }
-    }
-  }
-`;
-
-export const MonthButton = styled.div<{
-  active?: boolean;
-}>`
-  padding: 8px 16px;
-  border-radius: 6px;
-  background-color: ${({ theme, active }) => {
-    return active ? theme["gray-300"] : theme["gray-700"];
-  }};
-  color: ${({ theme, active }) =>
-    active ? theme["gray-900"] : theme["gray-300"]};
-  font-weight: ${({ active }) => (active ? "bold" : "normal")};
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, font-weight 0.2s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme["gray-600"]};
   }
 `;
 
@@ -370,4 +336,30 @@ export const Link = styled.a`
       height: 32px;
     }
   }
+`;
+
+export const ModalContainer = styled(Modal)`
+  .ant-modal-content {
+    background-color: ${({ theme }) => theme["gray-800"]} !important;
+
+    .ant-modal-body {
+ color: ${({ theme }) => theme["gray-100"]} !important;
+ input {
+      background-color: ${({ theme }) => theme["gray-600"]} !important;
+      color: ${({ theme }) => theme["gray-100"]} !important;
+      border: none !important;
+
+      height: 48px;
+
+      &::placeholder {
+        color: ${({ theme }) => theme["gray-300"]} !important;
+      }
+
+      &:focus {
+        box-shadow: none !important;
+      }
+ 
+ 
+      }
+ 
 `;

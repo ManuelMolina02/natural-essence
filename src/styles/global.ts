@@ -4,7 +4,6 @@ export const GlobalStyle = createGlobalStyle`
 * {
   padding: 0;
   box-sizing: border-box;  
-  max-width: 700px;
   margin: 0 auto;
 }
 
@@ -18,6 +17,8 @@ export const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme["gray-100"]};
     padding: 2rem;
     --webkit-font-smoothing: antialiased;
+      max-width: 700px;
+
   }
 
   body, input, textarea, button {
